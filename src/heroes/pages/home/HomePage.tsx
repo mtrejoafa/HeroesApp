@@ -1,24 +1,31 @@
-import { Heart, ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomJumbotron } from "@/components/custom/CustomJumbotron";
 import { HeroeStats } from "@/heroes/components/HeroeStats";
 import { HeroeGrid } from "@/heroes/components/HeroeGrid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
-import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
 import { getHeroesByPAge } from "@/heroes/actions/get-heroes-by-page.action";
+import { useQuery } from "@tanstack/react-query";
 
 export const HomePage = () => {
   const [activeTab, setActiveTab] = useState<
     "all" | "favorites" | "heroes" | "villains"
     >("favorites");
   
-  useEffect(() => {
-    getHeroesByPAge().then(heroes => {
-      console.log({heroes});
-    });
-  }, [])
+  const { data: heroesResponse } = useQuery({
+    queryKey: ['heroes'],
+    queryFn: () => getHeroesByPAge(),
+    staleTime: 1000 * 60 * 5
+  });
+
+  console.log(heroesResponse);
+
+  const heroes = heroesResponse?.heroes;
+
+  
+  // useEffect(() => {
+  //   getHeroesByPAge().then();
+  // }, [])
   
 
   return (
